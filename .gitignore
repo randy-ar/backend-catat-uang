@@ -1,0 +1,38 @@
+# Dependencies
+# Abaikan direktori node_modules karena bisa di-install ulang dari package.json
+./git 
+/node_modules
+/keys
+
+
+# Environment variables
+# Jangan pernah commit file .env yang berisi kredensial rahasia ke repository.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+# Abaikan file log yang dihasilkan selama development atau di production.
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Direktori output build
+/dist
+/build
+
+# Laporan testing
+/coverage
+
+# File sistem operasi
+.DS_Store
+Thumbs.db
+
+# File editor & IDE
+.vscode/
+.idea/

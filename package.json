@@ -1,0 +1,21 @@
+{
+  "name": "backend-catat-uang",
+  "version": "1.0.0",
+  "description": "Backend untuk aplikasi catat uang, handle OCR dan parsing OCR to model dengan Gemini AI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^1.10.0",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "tesseract.js": "^6.0.1"
+  }
+}
