@@ -1,6 +1,6 @@
 // models/spendingModel.ts
 import { db } from '../config/firebase';
-import { SpendingType, SpendingItemsType } from '../src/types/model'; // Import tipe
+import { SpendingType, SpendingItemsType } from '../types/model'; // Import tipe
 import { QueryDocumentSnapshot } from 'firebase-admin/firestore'; // Import untuk tipe data Firestore
 
 const addSpending = async (userId: string, spendingData: Omit<SpendingType, 'id'>): Promise<SpendingType> => {

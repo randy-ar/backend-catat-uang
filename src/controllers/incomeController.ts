@@ -1,8 +1,8 @@
 // controllers/incomeController.ts
 import { Request, Response } from 'express';
 import * as incomeModel from '../models/incomeModel'; // Import sebagai namespace
-import { IncomeType, SpendingCategoryType } from '../src/types/model';
-import SpendingCategoriesData from '../src/constant/SpendingCategories';
+import { IncomeType, SpendingCategoryType } from '../types/model';
+import SpendingCategoriesData from '../constant/SpendingCategories';
 
 const addIncome = async (req: Request, res: Response) => {
   const { name, amount, description, category_id, date } = req.body;

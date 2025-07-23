@@ -1,6 +1,6 @@
 // services/geminiService.ts
 import { GoogleGenAI } from '@google/genai';
-import { SpendingType, SpendingItemsType, SpendingCategoryType } from '../src/types/model'; // Import your types
+import { SpendingType, SpendingItemsType, SpendingCategoryType } from '../types/model'; // Import your types
 
 require('dotenv').config()
 

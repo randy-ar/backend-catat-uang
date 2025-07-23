@@ -4,7 +4,7 @@ import multer from 'multer';
 import * as spendingModel from '../models/spendingModel';
 import { performOcr } from '../services/ocrService';
 import { convertOcrToSpendingData } from '../services/geminiService';
-import { SpendingType } from '../src/types/model'; // Import SpendingType
+import { SpendingType } from '../types/model'; // Import SpendingType
 
 // Konfigurasi Multer
 const upload = multer({ storage: multer.memoryStorage() });

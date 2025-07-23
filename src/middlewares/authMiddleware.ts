@@ -1,7 +1,7 @@
 // middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../config/firebase';
-import { AuthUser } from '../src/types/model'; // Import AuthUser type
+import { AuthUser } from '../types/model'; // Import AuthUser type
 
 // Perluas antarmuka Request dari Express
 declare global {

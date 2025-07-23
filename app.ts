@@ -2,9 +2,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'; // Import CORS
-import authRoutes from './routes/authRoutes';
-import incomeRoutes from './routes/incomeRoutes';
-import spendingRoutes from './routes/spendingRoutes';
+import authRoutes from './src/routes/authRoutes';
+import incomeRoutes from './src/routes/incomeRoutes';
+import spendingRoutes from './src/routes/spendingRoutes';
 
 dotenv.config();
 

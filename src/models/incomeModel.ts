@@ -1,6 +1,6 @@
 // models/incomeModel.ts
 import { db } from '../config/firebase';
-import { IncomeType } from '../src/types/model'; // Import tipe
+import { IncomeType } from '../types/model'; // Import tipe
 
 const addIncome = async (userId: string, incomeData: Omit<IncomeType, 'id'>): Promise<IncomeType> => {
   const docRef = await db.collection('users').doc(userId).collection('incomes').add({
