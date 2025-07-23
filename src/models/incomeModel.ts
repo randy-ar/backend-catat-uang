@@ -8,7 +8,7 @@ const addIncome = async (userId: string, incomeData: Omit<IncomeType, 'id'>): Pr
     amount: incomeData.amount,
     description: incomeData.description,
     category: incomeData.category,
-    date: new Date(incomeData.date),
+    date: new Date(incomeData.date).toISOString().split('T')[0],
     createdAt: new Date()
   });
   return { 
@@ -25,7 +25,7 @@ const getIncomesByUserId = async (userId: string): Promise<IncomeType[]> => {
   const snapshot = await db.collection('users').doc(userId).collection('incomes').orderBy('date', 'desc').get(); 
   console.log(snapshot.docs);
   return snapshot.docs.map(doc => ({ 
-    id: doc.id, 
+    id: doc.ref.id, 
     name: doc.data().name, 
     amount: doc.data().amount, 
     description: doc.data().description, 
@@ -37,6 +37,21 @@ const getIncomesByUserId = async (userId: string): Promise<IncomeType[]> => {
    } as IncomeType)
   );
 };
+
+const getIncomeById = async (userId: string, incomeId: string): Promise<IncomeType | any> => {
+  const snapshot = await db.collection('users').doc(userId).collection('incomes').doc(incomeId).get();
+  if (!snapshot.exists) {
+    return null;
+  }
+  return {
+    id: snapshot.ref.id,
+    name: snapshot.data()?.name,
+    amount: snapshot.data()?.amount,
+    description: snapshot.data()?.description,
+    category: snapshot.data()?.category,
+    date: new Date(snapshot.data()?.date).toISOString().split('T')[0],
+  } as IncomeType;
+}
 
 const updateIncome = async (userId: string, incomeId: string, updateData: Partial<IncomeType>): Promise<IncomeType> => {
   await db.collection('users').doc(userId).collection('incomes').doc(incomeId).update(updateData);
@@ -51,6 +66,7 @@ const deleteIncome = async (userId: string, incomeId: string): Promise<{ message
 export {
   addIncome,
   getIncomesByUserId,
+  getIncomeById,
   updateIncome,
   deleteIncome
 };
