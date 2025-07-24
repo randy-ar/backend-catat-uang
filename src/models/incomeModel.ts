@@ -63,10 +63,36 @@ const deleteIncome = async (userId: string, incomeId: string): Promise<{ message
   return { message: 'Income deleted successfully' };
 };
 
+const getMonthlyIncomes = async (userId: string, year: number, month: number): Promise<IncomeType[]> => {
+  // Bulan di JavaScript Date object adalah 0-indexed (0=Jan, 11=Dec), jadi kita kurangi 1.
+  const startDate = new Date(year, month - 1, 1);
+  // Untuk mendapatkan akhir bulan, kita ambil hari pertama bulan berikutnya lalu query < dari tanggal itu.
+  const endDate = new Date(year, month, 1);
+
+  const startString = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
+  const endString = endDate.toISOString().split('T')[0];   // YYYY-MM-DD
+
+  const snapshot = await db.collection('users').doc(userId).collection('incomes')
+    .where('date', '>=', startString)
+    .where('date', '<', endString)
+    .orderBy('date', 'desc')
+    .get();
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    name: doc.data().name,
+    amount: doc.data().amount,
+    description: doc.data().description,
+    category: doc.data().category,
+    date: new Date(doc.data().date).toISOString().split('T')[0],
+  } as IncomeType));
+};
+
 export {
   addIncome,
   getIncomesByUserId,
   getIncomeById,
   updateIncome,
-  deleteIncome
+  deleteIncome,
+  getMonthlyIncomes
 };

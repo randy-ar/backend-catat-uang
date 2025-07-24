@@ -119,11 +119,70 @@ const deleteIncome = async (req: Request, res: Response) => {
   }
 }
 
+const getReportMonthly = async (req: Request, res: Response) => {
+  const userId = req.user?.uid;
+  const { year, month } = req.query;
+
+  if (!userId) {
+    return res.status(401).json({ message: 'User not authenticated or UID not available.' });
+  }
+
+  if (!year || !month) {
+    return res.status(400).json({ message: 'Query parameter "year" dan "month" dibutuhkan.' });
+  }
+
+  try {
+    const parsedYear = parseInt(year as string);
+    const parsedMonth = parseInt(month as string);
+
+    if (isNaN(parsedYear) || isNaN(parsedMonth) || parsedMonth < 1 || parsedMonth > 12) {
+      return res.status(400).json({ message: 'Format "year" atau "month" tidak valid.' });
+    }
+
+    // Hitung bulan sebelumnya
+    let prevYear = parsedYear;
+    let prevMonth = parsedMonth - 1;
+    if (prevMonth === 0) {
+      prevMonth = 12;
+      prevYear -= 1;
+    }
+
+    const currentMonthIncomes = await incomeModel.getMonthlyIncomes(userId, parsedYear, parsedMonth);
+    const previousMonthIncomes = await incomeModel.getMonthlyIncomes(userId, prevYear, prevMonth);
+
+    const totalCurrentMonth = currentMonthIncomes.reduce((sum, income) => sum + income.amount, 0);
+    const totalPreviousMonth = previousMonthIncomes.reduce((sum, income) => sum + income.amount, 0);
+
+    let percentageChange = 0;
+    if (totalPreviousMonth > 0) {
+      percentageChange = ((totalCurrentMonth - totalPreviousMonth) / totalPreviousMonth) * 100;
+    } else if (totalCurrentMonth > 0) {
+      percentageChange = 100; // Jika bulan lalu 0 dan bulan ini ada pemasukan, anggap naik 100%
+    }
+
+    res.status(200).json({
+      summary: {
+        totalCurrentMonth,
+        totalPreviousMonth,
+        percentageChange: parseFloat(percentageChange.toFixed(2)),
+      },
+      details: {
+        currentMonthIncomes,
+        previousMonthIncomes,
+      }
+    });
+  } catch (error: any) {
+    console.error('Error generating monthly income report:', error);
+    res.status(500).json({ message: 'Failed to generate monthly income report', error: error.message });
+  }
+}
+
 export {
   validateIncome,
   addIncome,
   getIncomes,
   getIncomesById,
   getCategories,
-  deleteIncome
+  deleteIncome,
+  getReportMonthly
 };

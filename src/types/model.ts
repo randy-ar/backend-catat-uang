@@ -32,6 +32,7 @@ export interface SpendingType {
   date: string;
   amount: number;
   category?: SpendingCategoryType;
+  receiptImageUrl?: string;
   items: SpendingItemsType[];
 }
 

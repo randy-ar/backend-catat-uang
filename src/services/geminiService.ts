@@ -9,7 +9,10 @@ interface GeminiSpendingOutput {
   name: string;
   date: string;
   amount: number;
-  category?: string; // Gemini might return string for category
+  category?: {
+    id: number;
+    name: string;
+  }; // Gemini might return string for category
   items: Array<{
     name: string;
     price: number;
@@ -28,7 +31,7 @@ const convertOcrToSpendingData = async (ocrText: string): Promise<GeminiSpending
     "name": "string (name of the store/merchant)",
     "date": "YYYY-MM-DD (date of transaction)",
     "amount": "number (total amount)",
-    "category": "string (e.g., Food, Shopping, Transport)",
+    "category": "object(id: number, name: string)",
     "items": [
       {
         "name": "string (item name)",
@@ -37,7 +40,7 @@ const convertOcrToSpendingData = async (ocrText: string): Promise<GeminiSpending
       }
     ]
   }
-  Jika jumlah item tidak tentu, asumsikan itu berjumlah 1.  Jika tanggal tidak bisa diekstrak, pakai tanggal saat ini.
+  Jika jumlah item tidak tentu, asumsikan itu berjumlah 1.  Jika tanggal tidak bisa diekstrak, pakai tanggal saat ini. Pilih salah satu category dari array berikut yang menurut anda cocok: [{ id: 1, name: 'Foods' },{ id: 2, name: 'Transportation' },{ id: 3, name: 'Health' },{ id: 4, name: 'Education' },{ id: 5, name: 'Communication' },{ id: 6, name: 'Hobbies' },{ id: 7, name: 'Utilities' },{ id: 8, name: 'Travel' },{ id: 9, name: 'Gifts' },{ id: 10, name: 'Bills' },{ id: 11, name: 'Entertainment' },{ id: 12, name: 'Shoppings' },{ id: 13, name: 'Clothing' },{ id: 14, name: 'Other' }]
   Teks OCR:
   "${ocrText}"`;
 
