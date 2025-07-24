@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import * as spendingModel from '../models/spendingModel';
 import { performOcr } from '../services/ocrService';
-import { convertOcrToSpendingData } from '../services/geminiService';
+import { adjustAmountSpendingData, convertOcrToSpendingData } from '../services/geminiService';
 import { SpendingCategoryType, SpendingItemsType, SpendingType } from '../types/model'; // Import SpendingType
 import SpendingCategoriesData from '../constant/SpendingCategories';
 import { body, validationResult } from 'express-validator/lib';
@@ -18,6 +18,41 @@ const upload = multer({
 });
 
 const validateScannedSpending = [
+  body('name')
+    .notEmpty().withMessage('Nama pengeluaran tidak boleh kosong')
+    .isString().withMessage('Nama pengeluaran harus berupa teks'),
+  body('amount')
+    .notEmpty().withMessage('Jumlah pengeluaran tidak boleh kosong')
+    .isNumeric().withMessage('Jumlah pengeluaran harus berupa angka')
+    .toFloat()
+    .custom((value: number) => value > 0).withMessage('Jumlah pengeluaran harus lebih besar dari 0'),
+  body('date')
+    .notEmpty().withMessage('Tanggal pengeluaran tidak boleh kosong')
+    .isISO8601().withMessage('Format tanggal tidak valid (YYYY-MM-DD)')
+    .toDate(), // Konversi ke objek Date
+  body('category.name')
+    .notEmpty().withMessage('Nama kategori tidak boleh kosong')
+    .isString().withMessage('Nama kategori harus berupa teks'),
+  body('category.id')
+    .notEmpty().withMessage('ID kategori tidak boleh kosong')
+    .isInt().withMessage('ID kategori harus berupa angka bulat')
+    .toInt(),
+  body('items')
+    .isArray().withMessage('Item harus berupa array')
+    .custom((items: SpendingItemsType[]) => {
+      if (!items.every(item => typeof item.name === 'string' && item.price !== undefined && typeof item.price === 'number' && item.price >= 0)) {
+        throw new Error('Setiap item harus memiliki nama (teks) dan harga (angka positif).');
+      }
+      return true;
+    }).withMessage('Setiap item harus memiliki nama dan harga yang valid.')
+];
+
+const validateAdjustedSpending = [
+  body('adjustAmount')
+    .notEmpty().withMessage('Jumlah pengeluaran tidak boleh kosong')
+    .isNumeric().withMessage('Jumlah pengeluaran harus berupa angka')
+    .toFloat()
+    .custom((value: number) => value > 0).withMessage('Jumlah pengeluaran harus lebih besar dari 0'),
   body('name')
     .notEmpty().withMessage('Nama pengeluaran tidak boleh kosong')
     .isString().withMessage('Nama pengeluaran harus berupa teks'),
@@ -127,6 +162,42 @@ const saveScannedSpending = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Gagal menyimpan pengeluaran', error: error.message });
   }
 };
+
+const adjustSpendingData = async (req: Request, res: Response) => {
+  const userId = req.user?.uid;
+  if (!userId) {
+    return res.status(401).json({ message: 'User not authenticated or UID not available.' });
+  }
+
+  // Periksa hasil validasi dari express-validator
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  // Data yang diterima dari klien sudah divalidasi dan mungkin telah diubah/disempurnakan
+  const { name, amount, date, category, items, adjustAmount } = req.body; // Jika Anda mengirim imageUrl dari klien
+  console.log("BODY : ",req.body)
+  const spendingData: Omit<SpendingType, 'id'> = {
+    name,
+    amount: parseFloat(amount), // Pastikan ini angka
+    date: new Date(date).toISOString().split('T')[0], // Tanggal sudah berupa string YYYY-MM-DD atau objek Date jika di-toDate()
+    category,
+    items,
+    // receiptImageUrl, // Tambahkan jika Anda menyimpannya bersamaan
+  };
+
+  try {
+    const adjustSpending = await adjustAmountSpendingData(adjustAmount, spendingData);
+    if (!adjustSpending) {
+      return res.status(400).json({ message: 'Could not extract spending data from receipt.' });
+    }
+    res.status(201).json({ message: 'Pengeluaran berhasil diupdate', spending: adjustSpending });
+  } catch (error: any) {
+    console.error('Error menyimpan pengeluaran (adjustSpendingData):', error);
+    res.status(500).json({ message: 'Gagal menyimpan pengeluaran', error: error.message });
+  }
+}
 
 const getSpendings = async (req: Request, res: Response) => {
   const userId = req.user?.uid;
@@ -287,8 +358,10 @@ const getCategories = async (req: Request, res: Response) => {
 export {
   upload,
   validateScannedSpending,
+  validateAdjustedSpending,
   scanFromReceipt,
   saveScannedSpending,
+  adjustSpendingData,
   getCategories,
   getSpendings,
   getSpendingById,

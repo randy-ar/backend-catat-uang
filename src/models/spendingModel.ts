@@ -13,6 +13,11 @@ const addSpending = async (userId: string, spendingData: Omit<SpendingType, 'id'
   return { id: docRef.id, ...spendingData };
 };
 
+const updateSpending = async (userId: string, spendingId: string, updateData: Partial<SpendingType>): Promise<SpendingType> => {
+  await db.collection('users').doc(userId).collection('spendings').doc(spendingId).update(updateData);
+  return { id: spendingId, ...updateData as SpendingType };
+};
+
 const getSpendingsByUserId = async (userId: string): Promise<SpendingType[]> => {
   const snapshot = await db.collection('users').doc(userId).collection('spendings').orderBy('date', 'desc').get();
   return snapshot.docs.map((doc: QueryDocumentSnapshot) => ({ 
@@ -94,6 +99,7 @@ const deleteSpending = async (userId: string, spendingId: string): Promise<{ mes
 
 export {
   addSpending,
+  updateSpending,
   getSpendingsByUserId,
   getSpendingById,
   getMonthlySpendings,
