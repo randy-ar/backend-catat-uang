@@ -3,7 +3,7 @@
 ./git 
 /node_modules
 /keys
-
+serviceAccount.json
 
 # Environment variables
 # Jangan pernah commit file .env yang berisi kredensial rahasia ke repository.
@@ -36,3 +36,4 @@ Thumbs.db
 # File editor & IDE
 .vscode/
 .idea/
+.vercel
