@@ -45,5 +45,5 @@ fs.writeFile(outputPath, JSON.stringify(serviceAccount, null, 2), 'utf8', (err) 
   if (err) {
     return console.error('Gagal menulis file service account:', err);
   }
-  console.log(`✅ File serviceAccount.json berhasil dibuat di: ${outputPath}`);
+  console.log(`✅ File serviceAccount.json berhasil dibuat di: ${outputPath} ${JSON.stringify(serviceAccount, null, 2)}`);
 });
