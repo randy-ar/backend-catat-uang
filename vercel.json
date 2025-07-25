@@ -1,10 +1,5 @@
 {
   "version": 2,
-   "build": {
-    "includeFiles": [
-      "node_modules/tesseract.js-core/tesseract-core-simd.wasm"
-    ]
-  },
   "builds": [
     {
       "src" : "scripts/generateServiceAccount.js",
@@ -15,6 +10,11 @@
       "src": "dist/server.js",
       "use": "@vercel/node",
       "config": { "includeFiles": ["dist/**"] }
+    },
+    {
+      "src": "dist/src/**.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["dist/src/**", "dist/**", "package.json", "node_modules/**"] }
     }
   ],
   "routes": [
