@@ -2,10 +2,10 @@
   "name": "backend-catat-uang",
   "version": "1.0.0",
   "description": "Backend untuk aplikasi catat uang, handle OCR dan parsing OCR to model dengan Gemini AI",
-  "main": "app.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon server.ts",
-    "start": "node app.js",
+    "start": "node dist/server.js",
     "build": "tsc",
     "serve": "node dist/server.js"
   },
