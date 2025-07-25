@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon server.ts",
     "start": "node dist/server.js",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && node scripts/generateServiceAccount.js",
     "serve": "node dist/server.js",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
