@@ -22,10 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Direktori output build
-/dist
-/build
-
 # Laporan testing
 /coverage
 
