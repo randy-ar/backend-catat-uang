@@ -18,6 +18,7 @@
   "dependencies": {
     "@google/genai": "^1.10.0",
     "@google/generative-ai": "^0.24.1",
+    "@shelf/aws-lambda-tesseract": "^5.2.0",
     "@types/serverless": "^3.12.27",
     "@vercel/node": "^5.3.6",
     "bcryptjs": "^3.0.2",
