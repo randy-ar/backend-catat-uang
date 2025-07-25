@@ -1,21 +1,28 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src" : "scripts/generateServiceAccount.js",
-        "use" : "@vercel/node",
-        "config": { "includeFiles": ["scripts/**", "dist/**", "package.json"] }
-      },
-      {
-        "src": "dist/server.js",
-        "use": "@vercel/node",
-        "config": { "includeFiles": ["dist/**"] }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "dist/server.js"
-      }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src" : "scripts/generateServiceAccount.js",
+      "use" : "@vercel/node",
+      "config": { "includeFiles": ["scripts/**", "dist/**", "package.json"] }
+    },
+    {
+      "src": "dist/server.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["dist/**"] }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js"
+    }
+  ],
+  "functions": {
+    "app/api/**/route.ts": {
+      "includeFiles": "node_modules/tesseract.js-core/tesseract-core-simd.wasm",
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }
