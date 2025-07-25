@@ -11,8 +11,7 @@ const serviceAccount = {
   type: "service_account",
   project_id: process.env.PROJECT_ID || "backend-catat-uang",
   private_key_id: process.env.PRIVATE_KEY_ID,
-  // Mengganti literal '\n' dengan karakter newline asli dari .env
-  private_key: process.env.PRIVATE_KEY ? process.env.PRIVATE_KEY.replace(/\\n/g, '\n') : undefined,
+  private_key: process.env.PRIVATE_KEY,
   client_email: process.env.CLIENT_EMAIL,
   client_id: process.env.CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
