@@ -60,7 +60,14 @@ if (!admin.apps.length) {
         console.error("Pastikan Anda sudah membuat file .env dan menjalankan skrip:");
         console.error("node scripts/generateServiceAccount.js");
         console.error('---------------------------------------------------------------------');
-        (0, child_process_1.exec)('node scripts/generateServiceAccount.js');
+        (0, child_process_1.exec)('npm run generate-service', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error: ${error.message}`);
+                return;
+            }
+            console.log(stdout);
+            console.log(stderr);
+        });
         process.exit(1);
     }
 }
