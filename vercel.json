@@ -4,7 +4,7 @@
       {
         "src" : "scripts/generateServiceAccount.js",
         "use" : "@vercel/node",
-        "config": { "includeFiles": ["scripts/**", "dist/**"] }
+        "config": { "includeFiles": ["scripts/**", "dist/**", "package.json"] }
       },
       {
         "src": "dist/server.js",
