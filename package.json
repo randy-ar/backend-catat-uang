@@ -10,7 +10,8 @@
     "serve": "node dist/server.js",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "generate-service": "node scripts/generateServiceAccount.js"
+    "generate-service": "node scripts/generateServiceAccount.js",
+    "postinstall": "node scripts/generateServiceAccount.js && echo Running post-install script"
   },
   "author": "",
   "license": "ISC",
