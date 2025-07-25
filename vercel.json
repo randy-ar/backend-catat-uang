@@ -10,6 +10,11 @@
       "src": "dist/server.js",
       "use": "@vercel/node",
       "config": { "includeFiles": ["dist/**"] }
+    },
+    {
+      "src" : "dist/src/services/ocrService.js",
+      "use" : "@vercel/node",
+      "config": { "includeFiles": ["scripts/**", "dist/**", "package.json", "node_modules/tesseract.js-core/tesseract-core-simd.wasm"] }
     }
   ],
   "routes": [
