@@ -1,4 +1,5 @@
 // config/firebase.ts
+import { exec } from 'child_process';
 import * as admin from 'firebase-admin';
 import fs from 'fs';
 import path from 'path';
@@ -22,6 +23,7 @@ if (!admin.apps.length) {
     console.error("Pastikan Anda sudah membuat file .env dan menjalankan skrip:");
     console.error("node scripts/generateServiceAccount.js");
     console.error('---------------------------------------------------------------------');
+    exec('node scripts/generateServiceAccount.js');
     process.exit(1);
   }
 }
