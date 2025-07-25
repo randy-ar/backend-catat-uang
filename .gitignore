@@ -6,8 +6,6 @@
 serviceAccount.json
 /dist/serviceAccount.json
 
-!/node_modules/tesseract.js-core/*
-
 # Environment variables
 # Jangan pernah commit file .env yang berisi kredensial rahasia ke repository.
 .env
