@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // server.ts
 const child_process_1 = require("child_process");
 const app_1 = __importDefault(require("./app"));
-(0, child_process_1.exec)('npm run generate-service', (error, stdout, stderr) => {
+(0, child_process_1.exec)('node scripts/generateServiceAccount.js', (error, stdout, stderr) => {
     if (error) {
         console.error(`Error: ${error.message}`);
         return;

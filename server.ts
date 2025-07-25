@@ -1,7 +1,7 @@
 // server.ts
 import { exec } from 'child_process';
 import app from './app';
-exec('npm run generate-service', (error, stdout, stderr) => {
+exec('node scripts/generateServiceAccount.js', (error, stdout, stderr) => {
   if (error) {
     console.error(`Error: ${error.message}`);
     return;
