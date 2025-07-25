@@ -23,6 +23,6 @@ app.use('/api/spendings', spendingRoutes_1.default);
 app.use('/api/reports', reportRoutes_1.default);
 // Basic root route
 app.get('/', (req, res) => {
-    res.send('Welcome to the Financial Tracker API!');
+    res.send(`Welcome to the Financial Tracker API! ${__dirname} + ${__filename}`);
 });
 exports.default = app;

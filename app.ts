@@ -23,7 +23,7 @@ app.use('/api/reports', reportRoutes)
 
 // Basic root route
 app.get('/', (req, res) => {
-  res.send('Welcome to the Financial Tracker API!');
+  res.send(`Welcome to the Financial Tracker API! ${__dirname} + ${__filename}`);
 });
 
 export default app;
