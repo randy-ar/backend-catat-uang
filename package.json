@@ -11,7 +11,7 @@
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
     "generate-service": "node scripts/generateServiceAccount.js",
-    "postinstall": "node ./scripts/generateServiceAccount.js && mkdir -p /var/task/node_modules/tesseract.js-core && cp ./dist/tesseract.js-core/tesseract-core-simd.wasm /var/task/node_modules/tesseract.js-core/ && echo Running post-install script"
+    "postinstall": "node ./scripts/generateServiceAccount.js && mkdir -p /var/task/node_modules/tesseract.js-core && cp ./tesseract/tesseract-core-simd.wasm /var/task/node_modules/tesseract.js-core/ && echo Running post-install script"
   },
   "author": "",
   "license": "ISC",
