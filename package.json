@@ -48,7 +48,6 @@
   "pre-commit": [
     "ts.check",
     "build",
-    "generate-service",
     "add-build"
   ]
 }
