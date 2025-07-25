@@ -2,6 +2,11 @@
     "version": 2,
     "builds": [
       {
+        "src" : "scripts/generateServiceAccount.js",
+        "use" : "@vercel/node",
+        "config": { "includeFiles": ["scripts/**", "dist/**"] }
+      },
+      {
         "src": "dist/server.js",
         "use": "@vercel/node",
         "config": { "includeFiles": ["dist/**"] }
