@@ -7,7 +7,9 @@ exports.performOcr = void 0;
 // services/ocrService.ts
 const tesseract_js_1 = __importDefault(require("tesseract.js"));
 const performOcr = async (imagePathOrBuffer) => {
-    const worker = await tesseract_js_1.default.createWorker('eng');
+    const worker = await tesseract_js_1.default.createWorker('ind', {}, {
+        corePath: 'dist/tesseract.js-core',
+    });
     const ret = await worker.recognize(imagePathOrBuffer);
     await worker.terminate();
     return ret.data.text;
