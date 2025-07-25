@@ -1,5 +1,13 @@
 {
   "version": 2,
+   "build": {
+    "includeFiles": [
+      "node_modules/tesseract.js-core/tesseract-core-simd.wasm"
+    ],
+    "env": {
+      "BUILD_COMMAND": "cp node_modules/tesseract.js-core/tesseract-core-simd.wasm dist/ && npm run build"
+    }
+  },
   "builds": [
     {
       "src" : "scripts/generateServiceAccount.js",
