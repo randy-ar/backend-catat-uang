@@ -5,6 +5,7 @@ import cors from 'cors'; // Import CORS
 import authRoutes from './src/routes/authRoutes';
 import incomeRoutes from './src/routes/incomeRoutes';
 import spendingRoutes from './src/routes/spendingRoutes';
+import reportRoutes from './src/routes/reportRoutes';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(cors()); // Gunakan CORS middleware
 app.use('/api/auth', authRoutes);
 app.use('/api/incomes', incomeRoutes);
 app.use('/api/spendings', spendingRoutes);
+app.use('/api/reports', reportRoutes)
 
 // Basic root route
 app.get('/', (req, res) => {
