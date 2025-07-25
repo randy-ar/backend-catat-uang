@@ -23,14 +23,6 @@ if (!admin.apps.length) {
     console.error("Pastikan Anda sudah membuat file .env dan menjalankan skrip:");
     console.error("node scripts/generateServiceAccount.js");
     console.error('---------------------------------------------------------------------');
-    exec('node scripts/generateServiceAccount.js', (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error: ${error.message}`);
-        return;
-      }
-      console.log(stdout);
-      console.log(stderr);
-    });
     process.exit(1);
   }
 }
