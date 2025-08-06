@@ -5,12 +5,22 @@ import { QueryDocumentSnapshot } from 'firebase-admin/firestore'; // Import untu
 
 const addSpending = async (userId: string, spendingData: Omit<SpendingType, 'id'>): Promise<SpendingType> => {
   console.log("SPENDING DATA: ", spendingData);
-  const docRef = await db.collection('users').doc(userId).collection('spendings').add({
-    ...spendingData,
-    date: new Date(spendingData.date).toISOString().split('T')[0],
-    createdAt: new Date()
-  });
-  return { id: docRef.id, ...spendingData };
+  try {
+    const docRef = await db.collection('users').doc(userId).collection('spendings').add({
+      ...spendingData,
+      date: new Date(spendingData.date).toISOString().split('T')[0],
+      createdAt: new Date()
+    });
+    return { id: docRef.id, ...spendingData };
+  } catch (error) {
+    const docRef = await db.collection('users').doc(userId).collection('spendings').add({
+      ...spendingData,
+      receiptImage: undefined,
+      date: new Date(spendingData.date).toISOString().split('T')[0],
+      createdAt: new Date()
+    });
+    return { id: docRef.id, ...spendingData };
+  }
 };
 
 const updateSpending = async (userId: string, spendingId: string, updateData: Partial<SpendingType>): Promise<SpendingType> => {

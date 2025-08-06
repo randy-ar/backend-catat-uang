@@ -5,12 +5,23 @@ exports.deleteSpending = exports.getMonthlySpendings = exports.getSpendingById =
 const firebase_1 = require("../config/firebase");
 const addSpending = async (userId, spendingData) => {
     console.log("SPENDING DATA: ", spendingData);
-    const docRef = await firebase_1.db.collection('users').doc(userId).collection('spendings').add({
-        ...spendingData,
-        date: new Date(spendingData.date).toISOString().split('T')[0],
-        createdAt: new Date()
-    });
-    return { id: docRef.id, ...spendingData };
+    try {
+        const docRef = await firebase_1.db.collection('users').doc(userId).collection('spendings').add({
+            ...spendingData,
+            date: new Date(spendingData.date).toISOString().split('T')[0],
+            createdAt: new Date()
+        });
+        return { id: docRef.id, ...spendingData };
+    }
+    catch (error) {
+        const docRef = await firebase_1.db.collection('users').doc(userId).collection('spendings').add({
+            ...spendingData,
+            receiptImage: undefined,
+            date: new Date(spendingData.date).toISOString().split('T')[0],
+            createdAt: new Date()
+        });
+        return { id: docRef.id, ...spendingData };
+    }
 };
 exports.addSpending = addSpending;
 const updateSpending = async (userId, spendingId, updateData) => {
