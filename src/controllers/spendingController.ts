@@ -103,14 +103,14 @@ const scanFromReceipt = async (req: Request, res: Response) => {
 
     // 1. Resize the image to a maximum height of 500px while maintaining aspect ratio
     const resizedImage = await sharp(originalImageBuffer)
-      .resize({ width: 300, fit: 'inside' }) // 'fit: inside' ensures it won't be upscaled
+      .resize({ width: 200, fit: 'inside' }) // 'fit: inside' ensures it won't be upscaled
     const resizedImageBuffer = await resizedImage.toBuffer();
     const resizedImageFile = await resizedImage.toFile('resized_image.jpg');
     
 
     const ImageBase64 = {
       uri: `data:image/${resizedImageFile.format};base64,${resizedImageBuffer.toString('base64')}`,
-      width: 300,
+      width: 200,
       height: resizedImageFile.height
     } as ImageBase64;
 
