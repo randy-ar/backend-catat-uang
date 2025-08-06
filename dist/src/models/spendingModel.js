@@ -46,6 +46,7 @@ const getSpendingById = async (userId, spendingId) => {
         amount: snapshot.data()?.amount,
         date: new Date(snapshot.data()?.date).toISOString().split('T')[0],
         category: snapshot.data()?.category,
+        receiptImage: snapshot.data()?.receiptImage,
         items: snapshot.data()?.items
     };
 };

@@ -32,8 +32,14 @@ export interface SpendingType {
   date: string;
   amount: number;
   category?: SpendingCategoryType;
-  receiptImageUrl?: string;
+  receiptImage?: ImageBase64;
   items: SpendingItemsType[];
+}
+
+export interface ImageBase64 {
+  uri: string;
+  width: number;
+  height: number;
 }
 
 // Tambahkan tipe untuk objek user yang diinject oleh middleware

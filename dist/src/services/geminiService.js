@@ -77,6 +77,7 @@ const adjustAmountSpendingData = async (totalAmount, spendingData) => {
   SPENDING DATA: ${JSON.stringify(spendingData)}
   ---
   PASTIKAN OUTPUT HANYA BERUPA JSON VALID SAJA, TANPA TEKS PENJELASAN APAPUN DI AWAL MAUPUN AKHIR.`;
+    console.log("PROMPT: ", prompt);
     try {
         const result = await genAI.models.generateContent({
             model: 'gemini-2.5-flash',

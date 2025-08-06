@@ -43,6 +43,7 @@ const ocrService_1 = require("../services/ocrService");
 const geminiService_1 = require("../services/geminiService");
 const SpendingCategories_1 = __importDefault(require("../constant/SpendingCategories"));
 const lib_1 = require("express-validator/lib");
+const sharp_1 = __importDefault(require("sharp"));
 // Konfigurasi Multer
 const upload = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
@@ -127,19 +128,32 @@ const scanFromReceipt = async (req, res) => {
         return res.status(400).json({ message: 'No image file uploaded.' });
     }
     try {
-        const imageBuffer = file.buffer;
-        const ocrText = await (0, ocrService_1.performOcr)(imageBuffer);
+        const originalImageBuffer = file.buffer;
+        // 1. Resize the image to a maximum height of 500px while maintaining aspect ratio
+        const resizedImage = await (0, sharp_1.default)(originalImageBuffer)
+            .resize({ width: 500, fit: 'inside' }); // 'fit: inside' ensures it won't be upscaled
+        const resizedImageBuffer = await resizedImage.toBuffer();
+        const resizedImageFile = await resizedImage.toFile('resized_image.jpg');
+        const ImageBase64 = {
+            uri: `data:image/${resizedImageFile.format};base64,${resizedImageBuffer.toString('base64')}`,
+            width: 500,
+            height: resizedImageFile.height
+        };
+        // 2. Convert the resized image buffer to a Base64 string
+        const base64Image = resizedImageBuffer.toString('base64');
+        console.log('Base64 Image:', base64Image);
+        const ocrText = await (0, ocrService_1.performOcr)(originalImageBuffer);
         console.log('OCR Result:', ocrText);
         const spendingDataFromGemini = await (0, geminiService_1.convertOcrToSpendingData)(ocrText);
         if (!spendingDataFromGemini) {
             return res.status(400).json({ message: 'Could not extract spending data from receipt.' });
         }
-        // Map the extracted data to your SpendingType
         const spendingData = {
             name: spendingDataFromGemini.name || 'Unknown Store',
             amount: parseFloat(spendingDataFromGemini.amount.toString()),
             date: spendingDataFromGemini.date || new Date().toISOString().split('T')[0],
             category: spendingDataFromGemini.category,
+            receiptImage: ImageBase64,
             items: spendingDataFromGemini.items.map(item => ({
                 name: item.name,
                 price: item.price,
@@ -165,7 +179,7 @@ const saveScannedSpending = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     // Data yang diterima dari klien sudah divalidasi dan mungkin telah diubah/disempurnakan
-    const { name, amount, date, category, items, receiptImageUrl } = req.body; // Jika Anda mengirim imageUrl dari klien
+    const { name, amount, date, category, items, receiptImage } = req.body; // Jika Anda mengirim imageUrl dari klien
     console.log("BODY : ", req.body);
     const spendingData = {
         name,
@@ -173,7 +187,7 @@ const saveScannedSpending = async (req, res) => {
         date: date, // Tanggal sudah berupa string YYYY-MM-DD atau objek Date jika di-toDate()
         category,
         items,
-        // receiptImageUrl, // Tambahkan jika Anda menyimpannya bersamaan
+        receiptImage: receiptImage,
     };
     try {
         const newSpending = await spendingModel.addSpending(userId, spendingData);
@@ -196,7 +210,7 @@ const adjustSpendingData = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     // Data yang diterima dari klien sudah divalidasi dan mungkin telah diubah/disempurnakan
-    const { name, amount, date, category, items, adjustAmount } = req.body; // Jika Anda mengirim imageUrl dari klien
+    const { name, amount, date, category, receiptImage, items, adjustAmount } = req.body; // Jika Anda mengirim imageUrl dari klien
     console.log("BODY : ", req.body);
     const spendingData = {
         name,
@@ -211,6 +225,7 @@ const adjustSpendingData = async (req, res) => {
         if (!adjustSpending) {
             return res.status(400).json({ message: 'Could not extract spending data from receipt.' });
         }
+        adjustSpending.receiptImage = receiptImage;
         res.status(201).json({ message: 'Pengeluaran berhasil diupdate', spending: adjustSpending });
     }
     catch (error) {
@@ -238,6 +253,7 @@ const getSpendingById = async (req, res) => {
     const userId = req.user?.uid;
     const spendingId = req.params.id;
     console.log("SPENDING ID: ", spendingId);
+    console.log("USER ID: ", userId);
     if (!userId) {
         return res.status(401).json({ message: 'User not authenticated or UID not available.' });
     }
