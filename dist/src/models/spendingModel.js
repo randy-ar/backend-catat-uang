@@ -14,13 +14,19 @@ const addSpending = async (userId, spendingData) => {
         return { id: docRef.id, ...spendingData };
     }
     catch (error) {
-        const docRef = await firebase_1.db.collection('users').doc(userId).collection('spendings').add({
-            ...spendingData,
-            receiptImage: undefined,
-            date: new Date(spendingData.date).toISOString().split('T')[0],
-            createdAt: new Date()
-        });
-        return { id: docRef.id, ...spendingData };
+        const firebaseError = error;
+        if (firebaseError.message.includes("PayloadTooLargeError")) {
+            const docRef = await firebase_1.db.collection('users').doc(userId).collection('spendings').add({
+                ...spendingData,
+                receiptImage: undefined,
+                date: new Date(spendingData.date).toISOString().split('T')[0],
+                createdAt: new Date()
+            });
+            return { id: docRef.id, ...spendingData };
+        }
+        else {
+            throw firebaseError;
+        }
     }
 };
 exports.addSpending = addSpending;

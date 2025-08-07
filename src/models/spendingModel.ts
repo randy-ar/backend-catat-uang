@@ -1,7 +1,7 @@
 // models/spendingModel.ts
 import { db } from '../config/firebase';
 import { SpendingType, SpendingItemsType } from '../types/model'; // Import tipe
-import { QueryDocumentSnapshot } from 'firebase-admin/firestore'; // Import untuk tipe data Firestore
+import { FirebaseFirestoreError, QueryDocumentSnapshot } from 'firebase-admin/firestore'; // Import untuk tipe data Firestore
 
 const addSpending = async (userId: string, spendingData: Omit<SpendingType, 'id'>): Promise<SpendingType> => {
   console.log("SPENDING DATA: ", spendingData);
@@ -13,13 +13,18 @@ const addSpending = async (userId: string, spendingData: Omit<SpendingType, 'id'
     });
     return { id: docRef.id, ...spendingData };
   } catch (error) {
-    const docRef = await db.collection('users').doc(userId).collection('spendings').add({
-      ...spendingData,
-      receiptImage: undefined,
-      date: new Date(spendingData.date).toISOString().split('T')[0],
-      createdAt: new Date()
-    });
-    return { id: docRef.id, ...spendingData };
+    const firebaseError = error as FirebaseFirestoreError
+    if(firebaseError.message.includes("PayloadTooLargeError")){
+      const docRef = await db.collection('users').doc(userId).collection('spendings').add({
+        ...spendingData,
+        receiptImage: undefined,
+        date: new Date(spendingData.date).toISOString().split('T')[0],
+        createdAt: new Date()
+      });
+      return { id: docRef.id, ...spendingData };
+    }else{
+      throw firebaseError
+    }
   }
 };
 
