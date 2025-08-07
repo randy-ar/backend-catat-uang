@@ -41,8 +41,8 @@ const validateScannedSpending = [
   body('items')
     .isArray().withMessage('Item harus berupa array')
     .custom((items: SpendingItemsType[]) => {
-      if (!items.every(item => typeof item.name === 'string' && item.price !== undefined && typeof item.price === 'number' && item.price >= 0)) {
-        throw new Error('Setiap item harus memiliki nama (teks) dan harga (angka positif).');
+      if (!items.every(item => typeof item.name === 'string' && item.price !== undefined && typeof item.price === 'number')) {
+        throw new Error('Setiap item harus memiliki nama (teks) dan harga.');
       }
       return true;
     }).withMessage('Setiap item harus memiliki nama dan harga yang valid.')
@@ -76,8 +76,8 @@ const validateAdjustedSpending = [
   body('items')
     .isArray().withMessage('Item harus berupa array')
     .custom((items: SpendingItemsType[]) => {
-      if (!items.every(item => typeof item.name === 'string' && item.price !== undefined && typeof item.price === 'number' && item.price >= 0)) {
-        throw new Error('Setiap item harus memiliki nama (teks) dan harga (angka positif).');
+      if (!items.every(item => typeof item.name === 'string' && item.price !== undefined && typeof item.price === 'number')) {
+        throw new Error('Setiap item harus memiliki nama (teks) dan harga.');
       }
       return true;
     }).withMessage('Setiap item harus memiliki nama dan harga yang valid.')
